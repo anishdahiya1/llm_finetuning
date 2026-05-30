@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-optimization-lab"
+version = "0.1.0"
+description = "A notebook lab for quantization, GGUF inference, LoRA, memory, RAG, and evaluation."
+readme = "README.md"
+requires-python = ">=3.10"

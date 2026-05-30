@@ -1,3 +1,10 @@
+Metadata-Version: 2.4
+Name: llm-optimization-lab
+Version: 0.1.0
+Summary: A notebook lab for quantization, GGUF inference, LoRA, memory, RAG, and evaluation.
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+
 # LLM Optimization Lab
 
 A single repo for six small but real demos around model efficiency, retrieval, memory, and evaluation.
@@ -27,7 +34,6 @@ jupyter lab
 - The notebooks default to lightweight models and synthetic samples so the repo is usable on a laptop.
 - For the full GPU quantization path, install a CUDA build of PyTorch and `bitsandbytes` in a Linux or WSL environment.
 - For GGUF inference, download a quantized `.gguf` model file separately and point the notebook to it.
-- The FastAPI endpoint lives in `llm_lab.gguf_api` and can be started with `uvicorn llm_lab.gguf_api:app --reload`.
 - The shared utilities live in `llm_lab/` and are imported by every notebook.
 
 ## Suggested demo order

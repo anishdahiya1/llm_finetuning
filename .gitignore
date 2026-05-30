@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+*.pt
+*.bin
+*.safetensors
+*.gguf
+*.lora
+*.adapter
+outputs/
+artifacts/
+.cache/
