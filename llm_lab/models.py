@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Any
 
 try:
@@ -38,8 +39,9 @@ def build_bnb_config(load_in_4bit: bool = True):
     )
 
 
-def load_causal_lm(model_name: str, quantized: bool = False, device_map: str | None = "auto", **kwargs):
-    load_kwargs = dict(kwargs)
+@lru_cache(maxsize=8)
+def _load_causal_lm_cached(model_name: str, quantized: bool, device_map: str | None, extra_kwargs: tuple[tuple[str, Any], ...]) -> ModelBundle:
+    load_kwargs = dict(extra_kwargs)
     if quantized:
         load_kwargs["quantization_config"] = build_bnb_config(True)
         if device_map is not None:
@@ -49,10 +51,15 @@ def load_causal_lm(model_name: str, quantized: bool = False, device_map: str | N
         if device_map is not None:
             load_kwargs.setdefault("device_map", device_map)
 
-    tokenizer = load_tokenizer(model_name, trust_remote_code=kwargs.get("trust_remote_code", False))
+    tokenizer = load_tokenizer(model_name, trust_remote_code=load_kwargs.get("trust_remote_code", False))
     model = AutoModelForCausalLM.from_pretrained(model_name, **load_kwargs)
     tokenizer.pad_token = tokenizer.eos_token if tokenizer.pad_token is None else tokenizer.pad_token
     return ModelBundle(model=model, tokenizer=tokenizer)
+
+
+def load_causal_lm(model_name: str, quantized: bool = False, device_map: str | None = "auto", **kwargs):
+    cache_key = tuple(sorted(kwargs.items()))
+    return _load_causal_lm_cached(model_name, quantized, device_map, cache_key)
 
 
 def count_trainable_parameters(model) -> dict[str, int]:
